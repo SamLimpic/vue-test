@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center container">
+  <div class="text-center container-fluid">
     <div class="row">
       <div class="col">
         <img alt="Vue logo" src="./assets/logo.png" />
@@ -8,15 +8,40 @@
     </div>
     <div class="row">
       <div class="col">
-        <form @submit.prevent="addBot">
+        <form @submit.prevent="addBot" v-if="state.addingBot">
           <p>{{ state.newBotName }}</p>
           <!-- NOTE v-model is 2 way data binding: it is pulled from and alters values from the state -->
-          <input type="text" placeholder="Name..." v-model="state.newBotName" />
-          <button type="submit" class="btn btn-dark mx-2">TO THE PIT!</button>
+          <button
+            type="button"
+            label="add bot"
+            class="btn btn-warning mx-2"
+            @click="state.addingBot = false"
+          >
+            CANCEL
+          </button>
+          <input
+            type="text"
+            placeholder="Name..."
+            v-model="state.newBotName"
+            minlength="3"
+            maxlength="15"
+            required
+          />
+          <button type="submit" label="submit bot" class="btn btn-dark mx-2">
+            TO THE PIT!
+          </button>
         </form>
+        <button
+          type="button"
+          v-else
+          class="btn btn-info mt-3"
+          @click="state.addingBot = true"
+        >
+          ADD A BOT
+        </button>
       </div>
     </div>
-    <div class="row justify-content-around mt-5">
+    <div class="row justify-content-around my-5">
       <!-- NOTE v-for iterates over a collection and requires a unique "key" that has to be a propery of the object and unique to each object
       It will repeat the element it is on -->
       <div
@@ -33,6 +58,7 @@
             'text-danger': bot.health <= 33,
             'text-dark': bot.health == 0,
           }"
+          class="text-bold"
         >
           {{ bot.name }} : {{ bot.health }}
         </h1>
@@ -93,6 +119,7 @@ export default {
       myName: "Sam",
       health: 100,
       newBotName: "",
+      addingBot: false,
       enemies: [
         {
           name: "JSON",
@@ -124,6 +151,7 @@ export default {
           imgUrl: "https://robohash.org/" + state.newBotName,
           health: 100,
         });
+        state.newBotName = "";
       },
     };
   },
